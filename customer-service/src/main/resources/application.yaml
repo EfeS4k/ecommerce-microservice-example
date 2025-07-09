@@ -1,0 +1,29 @@
+server:
+  # This port is the port that SpringBoot will listen. Means app is running on port 8081 in container.
+  port: 8082 # Springboot app (customer-service) will run on port 8081 in docker container.
+  servlet:
+    context-path: /cusa # cusa: customer service api
+    # if we want to call with csa: localhost:9000/csa/... since 8081 is port of container.
+    # And we made port mapping in docker-compose file as 9000:8081
+
+spring:
+  application:
+    # app name of springboot. Used in Service Discovery (Gateway uses this name to redirect the request)
+    # Very important for microservice architecture.
+    name: customer-service # Also this name is recommended to be same with the one in docker-compose file.
+  datasource:
+    username: customer_user # username and password must be same with ones in corresponding application.yaml
+    password: 123
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://customer-db:5432/customer_service_db
+    # The customer-db (name) must be same with service name from docker-compose file.
+    # customer-db here refers to container, means SpringBoot app tries to connect customer-db in Postgres container.
+    # Also as customer-db ported in 5434:5432, we can write 5434 instead of customer-db, but this is better.
+    # If database were on another container, we should have written its name as hostname.
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true # show sql queries on console.
+    properties:
+      hibernate:
+        format_sql: true # show sql in readable way

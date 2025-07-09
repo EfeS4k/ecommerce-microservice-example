@@ -1,0 +1,21 @@
+# File is explained in .\customer-service\src\main\resources\application.yaml, for educational purposes.
+server:
+  port: 8084
+  servlet:
+    context-path: /prsa # product service api
+
+spring:
+  application:
+    name: product-service
+  datasource:
+    username: product_user
+    password: 123
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://product-db:5432/product_service_db
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

@@ -1,0 +1,21 @@
+# File is explained in .\customer-service\src\main\resources\application.yaml, for educational purposes.
+server:
+  port: 8085
+  servlet:
+    context-path: /wosa # worker service api
+
+spring:
+  application:
+    name: worker-service
+  datasource:
+    username: worker_user
+    password: 123
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://order-db:5432/order_service_db
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

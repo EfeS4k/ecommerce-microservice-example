@@ -1,0 +1,152 @@
+version: '3.8'
+
+services:
+  # services are nearly in file order: customer (2nd), category (1st), order(3rd), product (4th), worker (5th)
+
+  ### CUSTOMER 9002:8082 ###
+
+  # application.yaml for customer-service is in: .\customer-service\src\main\resources\application.yaml
+  # Service name on .yaml file. Used to make references in compose file.
+  # If other services (like springboot application.yml), it should use this
+  customer-db:
+    container_name: customer-db-container # The visible name in docker app. Used in docker ps, stop etc.
+    image: postgres
+    environment:
+      POSTGRES_USER: customer_user
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: customer_service_db # This name comes from the end of url in application.yaml
+
+    # volume mapping.
+      # Left side is host, right side is container. During the runtime of app, the data is written in
+      #  right side(container), and as the container closes, the data is deleted. With volume mapping,
+      #  we ensure that the data are not lost. As the program reopens, the container take the data from
+      #  host address.
+    volumes:
+      - ./postgres-customer-data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5434:5432" # Host 5434 -> Container 5432 (default of postgresql) called port forwarding or port mapping.
+      # Actually, we don't need this, as we can access it with customer-postgres-container:5432/...
+      # BUT, if we want to access it by apps like DBeaver, we can say HOST: localhost , PORT: 5433, DB: customer_service_db
+
+  # This is not the name of file, file name is below. They are independent names.
+    # This can only be used in depends_on in this file, as it is a reference name in only docker-compose file.
+  customer-service:
+    container_name: customer-service-container # visible name in docker ps.
+
+    # REQUIREMENTS: There must be a file named customer-service, and it must have Dockerfile in it.
+    build: ./customer-service # builds the Docker image in customer-service file.
+
+    ports:
+      - "9002:8082" # Redirects the requests that comes to host 9000 to container 8081.
+                    # for external access, localhost:9000/csa/...
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - customer-db # Unless customer-db starts, the service won't start.
+                    #  It must be same with the service name.
+
+
+  ### CATEGORY 9001:8081, db port: 5433 ###
+  category-db:
+    container_name: category-db-container
+    image: postgres
+    environment:
+      POSTGRES_USER: category_user
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: category_service_db
+    volumes:
+      - ./postgres-category-data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5433:5432"
+
+  category-service:
+    container_name: category-service-container
+    build: ./category-service
+    ports:
+      - "9001:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - category-db
+
+
+  ### ORDER 9003:8083, db port: 5435 ###
+  order-db:
+    container_name: order-db-container
+    image: postgres
+    environment:
+      POSTGRES_USER: order_user
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: order_service_db
+    volumes:
+      - ./postgres-order-data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5435:5432"
+
+  order-service:
+    container_name: order-service-container
+    build: ./order-service
+    ports:
+      - "9003:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - order-db
+
+
+  ### PRODUCT 9004:8084, db port: 5436 ###
+  product-db:
+    container_name: product-db-container
+    image: postgres
+    environment:
+      POSTGRES_USER: product_user
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: product_service_db
+    volumes:
+      - ./postgres-product-data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5436:5432"
+
+  product-service:
+    container_name: product-service-container
+    build: ./product-service
+    ports:
+      - "9004:8084"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - product-db
+
+
+  ### WORKER 9005:8085, db port: 5437 ###
+  worker-db:
+    container_name: worker-db-container
+    image: postgres
+    environment:
+      POSTGRES_USER: worker_user
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: worker_service_db
+    volumes:
+      - ./postgres-worker-data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5437:5432"
+
+  worker-service:
+    container_name: worker-service-container
+    build: ./worker-service
+    ports:
+    - "9005:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+    depends_on:
+      - worker-db
+
+
+
+
+
