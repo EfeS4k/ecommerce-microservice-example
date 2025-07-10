@@ -11,7 +11,7 @@ spring:
     username: worker_user
     password: 123
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://order-db:5432/order_service_db
+    url: jdbc:postgresql://worker-db:5432/worker_service_db
   jpa:
     hibernate:
       ddl-auto: update

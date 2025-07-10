@@ -22,7 +22,7 @@ services:
       #  we ensure that the data are not lost. As the program reopens, the container take the data from
       #  host address.
     volumes:
-      - ./postgres-customer-data:/var/lib/postgresql/data
+      - ./postgres-data/customer:/var/lib/postgresql/data
     restart: always
     ports:
       - "5434:5432" # Host 5434 -> Container 5432 (default of postgresql) called port forwarding or port mapping.
@@ -56,7 +56,7 @@ services:
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: category_service_db
     volumes:
-      - ./postgres-category-data:/var/lib/postgresql/data
+      - ./postgres-data/category:/var/lib/postgresql/data
     restart: always
     ports:
       - "5433:5432"
@@ -81,7 +81,7 @@ services:
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: order_service_db
     volumes:
-      - ./postgres-order-data:/var/lib/postgresql/data
+      - ./postgres-data/order:/var/lib/postgresql/data
     restart: always
     ports:
       - "5435:5432"
@@ -106,7 +106,7 @@ services:
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: product_service_db
     volumes:
-      - ./postgres-product-data:/var/lib/postgresql/data
+      - ./postgres-data/product:/var/lib/postgresql/data
     restart: always
     ports:
       - "5436:5432"
@@ -131,7 +131,7 @@ services:
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: worker_service_db
     volumes:
-      - ./postgres-worker-data:/var/lib/postgresql/data
+      - ./postgres-data/worker:/var/lib/postgresql/data
     restart: always
     ports:
       - "5437:5432"
