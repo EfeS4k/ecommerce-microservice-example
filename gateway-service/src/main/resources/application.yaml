@@ -1,0 +1,31 @@
+server:
+  port: 8080 # Gateway d??ar?ya bu porttan aç?l?r. (D?? dünya 8080 ? Gateway)
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: customer-service
+          uri: http://customer-service:8082
+          predicates:
+            - Path=/api/cusa/**
+        - id: category-service
+          uri: http://category-service:8081
+          predicates:
+            - Path=/api/casa/**
+        - id: order-service
+          uri: http://order-service:8083
+          predicates:
+            - Path=/api/orsa/**
+        - id: product-service
+          uri: http://product-service:8084
+          predicates:
+            - Path=/api/prsa/**
+        - id: worker-service
+          uri: http://worker-service:8085
+          predicates:
+            - Path=/api/wosa/**

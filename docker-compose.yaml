@@ -146,6 +146,17 @@ services:
     depends_on:
       - worker-db
 
+  gateway-service:
+    container_name: gateway-service-container
+    build: ./gateway-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - customer-service
+      - category-service
+      - order-service
+      - product-service
+      - worker-service
 
 
 
